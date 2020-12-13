@@ -5,7 +5,6 @@ import { TouchableOpacity } from "react-native";
 
 export default class OfferSmall extends React.PureComponent {
   goToDetails(offer, nav) {
-    console.log(offer);
     nav.navigate("Details", { offer });
   }
 
