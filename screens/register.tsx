@@ -1,14 +1,23 @@
+import { Formik } from "formik";
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Input, Button, Div, Text } from "react-native-magnus";
 
-export default class RegisterScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text mt={10} fontSize="lg" fontWeight="bold">
-          Zarejestruj
-        </Text>
+function RegisterForm() {
+  return (
+    <Formik
+      initialValues={{
+        username: "",
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+      }}
+      validate={(values) => console.log("Validation function")}
+      onSubmit={(values, { setSubmitting }) => console.log(values)}
+    >
+      {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
         <Div>
           <Input
             placeholder="username"
@@ -16,6 +25,7 @@ export default class RegisterScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('username')}
           />
           <Input
             secureTextEntry
@@ -24,6 +34,7 @@ export default class RegisterScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('password')}
           />
           <Input
             placeholder="email"
@@ -31,6 +42,7 @@ export default class RegisterScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('email')}
           />
           <Input
             placeholder="firstName"
@@ -38,6 +50,7 @@ export default class RegisterScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('firstName')}
           />
           <Input
             placeholder="lastName"
@@ -45,6 +58,7 @@ export default class RegisterScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('lastName')}
           />
           <Input
             placeholder="phoneNumber"
@@ -52,6 +66,7 @@ export default class RegisterScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('phoneNumber')}
           />
           <Button
             mt="lg"
@@ -63,11 +78,25 @@ export default class RegisterScreen extends React.Component {
             rounded="circle"
             color="white"
             shadow={2}
-            onPress={() => console.log("AAAAAA")}
+            onPress={handleSubmit}
           >
             Zarejestruj
           </Button>
         </Div>
+      )}
+    </Formik>
+  );
+}
+export default class RegisterScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <Text mt={10} fontSize="lg" fontWeight="bold">
+          Zarejestruj
+        </Text>
+        <ScrollView style={{ flex: 1 }}>
+          <RegisterForm />
+        </ScrollView>
       </View>
     );
   }

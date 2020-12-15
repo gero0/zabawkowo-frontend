@@ -1,14 +1,16 @@
+import { Formik } from "formik";
 import React from "react";
 import { View } from "react-native";
 import { Input, Button, Div, Text } from "react-native-magnus";
 
-export default class LoginScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text mt={10} fontSize="lg" fontWeight="bold">
-          Zaloguj
-        </Text>
+function LoginForm() {
+  return (
+    <Formik
+      initialValues={{ email: "", password:"" }}
+      validate={(values) => console.log("Validation function")}
+      onSubmit={(values, { setSubmitting }) => console.log(values)}
+    >
+      {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
         <Div>
           <Input
             placeholder="email"
@@ -16,6 +18,7 @@ export default class LoginScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('email')}
           />
           <Input
             secureTextEntry
@@ -24,6 +27,7 @@ export default class LoginScreen extends React.Component {
             mt={10}
             focusBorderColor="blue700"
             borderColor="black"
+            onChangeText={handleChange('password')}
           />
           <Button
             mt="lg"
@@ -35,11 +39,23 @@ export default class LoginScreen extends React.Component {
             rounded="circle"
             color="white"
             shadow={2}
-            onPress={() => console.log("AAAAAA")}
+            onPress={handleSubmit}
           >
             Zaloguj
           </Button>
         </Div>
+      )}
+    </Formik>
+  );
+}
+export default class LoginScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <Text mt={10} fontSize="lg" fontWeight="bold">
+          Zaloguj
+        </Text>
+        <LoginForm />
       </View>
     );
   }
