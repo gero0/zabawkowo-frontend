@@ -2,6 +2,7 @@ import { Formik } from "formik";
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { Input, Button, Div, Text, Image } from "react-native-magnus";
+import { InputField, LargeButton } from "../components/formComponents";
 
 function OfferForm() {
   return (
@@ -19,70 +20,19 @@ function OfferForm() {
               m={10}
               //source={require('../assets/images/noPhoto.png')}
             />
-            <Button
-              mt="lg"
-              ml="md"
-              px="xl"
-              py="lg"
-              bg="blue500"
-              w={300}
-              rounded="circle"
-              color="white"
-              shadow={2}
-              onPress={() => console.log("loading picture...")}
-            >
+            <LargeButton onPress={() => console.log("loading picture...")}>
               Załaduj obraz...
-            </Button>
+            </LargeButton>
           </Div>
           <Div>
-            <Input
-              placeholder="name"
-              p={10}
-              mt={10}
-              focusBorderColor="blue700"
-              borderColor="black"
-              onChangeText={handleChange('name')}
+            <InputField name="name" handler={handleChange("name")} />
+            <InputField
+              name="description"
+              handler={handleChange("description")}
             />
-            <Input
-              placeholder="description"
-              p={10}
-              mt={10}
-              multiline={true}
-              numberOfLines={4}
-              focusBorderColor="blue700"
-              borderColor="black"
-              onChangeText={handleChange('description')}
-            />
-            <Input
-              placeholder="Price"
-              p={10}
-              mt={10}
-              focusBorderColor="blue700"
-              borderColor="black"
-              onChangeText={handleChange('price')}
-            />
-            <Input
-              placeholder="Age"
-              p={10}
-              mt={10}
-              focusBorderColor="blue700"
-              borderColor="black"
-              onChangeText={handleChange('age')}
-            />
-            <Button
-              mt="lg"
-              ml="md"
-              px="xl"
-              py="lg"
-              bg="blue500"
-              w={300}
-              rounded="circle"
-              color="white"
-              shadow={2}
-              onPress={handleSubmit}
-            >
-              Utwórz ofertę...
-            </Button>
+            <InputField name="Price" handler={handleChange("price")} />
+            <InputField name="Age" handler={handleChange("age")} />
+            <LargeButton onPress={handleSubmit}>Utwórz ofertę...</LargeButton>
           </Div>
         </View>
       )}

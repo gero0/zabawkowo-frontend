@@ -1,7 +1,8 @@
 import { Formik } from "formik";
 import React from "react";
 import { ScrollView, View } from "react-native";
-import { Input, Button, Div, Text } from "react-native-magnus";
+import { Button, Div, Text } from "react-native-magnus";
+import { InputField, LargeButton } from "../components/formComponents";
 
 function RegisterForm() {
   return (
@@ -19,69 +20,20 @@ function RegisterForm() {
     >
       {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
         <Div>
-          <Input
-            placeholder="username"
-            p={10}
-            mt={10}
-            focusBorderColor="blue700"
-            borderColor="black"
-            onChangeText={handleChange('username')}
+          <InputField name="username" handler={handleChange("username")} />
+          <InputField
+            name="password"
+            handler={handleChange("password")}
+            secure
           />
-          <Input
-            secureTextEntry
-            placeholder="password"
-            p={10}
-            mt={10}
-            focusBorderColor="blue700"
-            borderColor="black"
-            onChangeText={handleChange('password')}
+          <InputField name="email" handler={handleChange("email")} />
+          <InputField name="firstName" handler={handleChange("firstName")} />
+          <InputField name="lastName" handler={handleChange("lastName")} />
+          <InputField
+            name="phoneNumber"
+            handler={handleChange("phoneNumber")}
           />
-          <Input
-            placeholder="email"
-            p={10}
-            mt={10}
-            focusBorderColor="blue700"
-            borderColor="black"
-            onChangeText={handleChange('email')}
-          />
-          <Input
-            placeholder="firstName"
-            p={10}
-            mt={10}
-            focusBorderColor="blue700"
-            borderColor="black"
-            onChangeText={handleChange('firstName')}
-          />
-          <Input
-            placeholder="lastName"
-            p={10}
-            mt={10}
-            focusBorderColor="blue700"
-            borderColor="black"
-            onChangeText={handleChange('lastName')}
-          />
-          <Input
-            placeholder="phoneNumber"
-            p={10}
-            mt={10}
-            focusBorderColor="blue700"
-            borderColor="black"
-            onChangeText={handleChange('phoneNumber')}
-          />
-          <Button
-            mt="lg"
-            ml="md"
-            px="xl"
-            py="lg"
-            bg="blue500"
-            w={300}
-            rounded="circle"
-            color="white"
-            shadow={2}
-            onPress={handleSubmit}
-          >
-            Zarejestruj
-          </Button>
+          <LargeButton onPress={handleSubmit}>Zarejestruj</LargeButton>
         </Div>
       )}
     </Formik>
