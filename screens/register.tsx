@@ -1,8 +1,37 @@
+import * as SecureStore from "expo-secure-store";
+import { domain } from "../constants/network";
 import { Formik } from "formik";
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { Button, Div, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
+
+async function submitForm(data) {
+  data.username = data.username.trim();
+  data.email = data.email.trim();
+  data.first_name = data.first_name.trim();
+  data.last_name = data.last_name.trim();
+  data.phone_number = data.phone_number.trim();
+
+  const response = await fetch(domain + "/api/user/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const json = await response.json();
+
+  if (json.status !== "OK") {
+    console.log(json.status);
+    return json.status;
+  }
+
+  await SecureStore.setItemAsync("token", json.token);
+
+  return json.status;
+}
 
 function RegisterForm() {
   return (
@@ -11,12 +40,24 @@ function RegisterForm() {
         username: "",
         email: "",
         password: "",
-        firstName: "",
-        lastName: "",
+        first_name: "",
+        last_name: "",
         phoneNumber: "",
       }}
       validate={(values) => console.log("Validation function")}
-      onSubmit={(values, { setSubmitting }) => console.log(values)}
+      onSubmit={async (values, { setSubmitting }) => {
+        const status = await submitForm(values);
+        if (status !== "OK") {
+          Alert.alert(
+            "Nie można zarejestrować",
+            `Wystąpił błąd podczas próby rejestracji, odpowiedź serwera: ${status}`,
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            { cancelable: true }
+          );
+        }else{
+          console.log("TODO: redirect after successfull register");
+        }
+      }}
     >
       {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
         <Div>
@@ -27,11 +68,11 @@ function RegisterForm() {
             secure
           />
           <InputField name="email" handler={handleChange("email")} />
-          <InputField name="firstName" handler={handleChange("firstName")} />
-          <InputField name="lastName" handler={handleChange("lastName")} />
+          <InputField name="firstName" handler={handleChange("first_name")} />
+          <InputField name="lastName" handler={handleChange("last_name")} />
           <InputField
             name="phoneNumber"
-            handler={handleChange("phoneNumber")}
+            handler={handleChange("phone_number")}
           />
           <LargeButton onPress={handleSubmit}>Zarejestruj</LargeButton>
         </Div>
