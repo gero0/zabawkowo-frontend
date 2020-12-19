@@ -6,6 +6,8 @@ import HomeScreen from "./screens/offerIndex";
 import RegisterScreen from "./screens/register";
 import LoginScreen from "./screens/login";
 import OfferForm from "./screens/offerForm";
+import AddressForm from "./screens/addressForm";
+import UserPage from "./screens/userPage";
 import { ThemeProvider } from "react-native-magnus";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
@@ -19,6 +21,8 @@ function Home() {
       <Stack.Screen name="Dodaj ofertę..." component={OfferForm} />
       <Stack.Screen name="Zaloguj..." component={LoginScreen} />
       <Stack.Screen name="Zarejestruj..." component={RegisterScreen} />
+      <Stack.Screen name="Profil..." component={UserPage} />
+      <Stack.Screen name="Dodaj adres..." component={AddressForm} />
     </Drawer.Navigator>
   );
 }

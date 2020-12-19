@@ -1,27 +1,83 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { Div, Text, Image } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
 import * as ImagePicker from "expo-image-picker";
+import * as SecureStore from "expo-secure-store";
 import { domain } from "../constants/network";
+import mime from "mime";
 
-function sendForm(data, image) {
-  let result = fetch(domain + "/api/offer/create", {
+async function submitForm(data, image) {
+  const token = await SecureStore.getItemAsync("token");
+  if (!token) {
+    return { status: "ERR_TOKEN_LOCAL" };
+  }
+  //TODO: add try catch for network error
+  const dataResponse = await fetch(domain + "/api/offer/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "authentication" : "2137" //TODO: authentication
+      authorization: token,
     },
-    body: JSON.stringify({data}),
+    body: JSON.stringify(data),
   });
+
+  const dataJson = await dataResponse.json();
+
+  if (dataJson.status !== "OK") {
+    console.log(dataJson.status);
+    return { status: "ERROR", dataStatus: dataJson.status };
+  }
+
+  if (!image) {
+    return { status: "OK", dataStatus: dataJson.status };
+  }
+
+  const offerId = dataJson.offer_id;
+  let formData = new FormData();
+
+  formData.append("file", {
+    uri: image.uri,
+    type: "image/png",
+    name: "file",
+  });
+
+  const imageResponse = await fetch(
+    domain + `/api/offer/${offerId}/upload-photo`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        authorization: token,
+      },
+      body: formData,
+    }
+  );
+
+  const imageJson = await imageResponse.json();
+
+  if (imageJson.status !== "OK") {
+    console.log(imageJson.status);
+    return {
+      status: "ERROR",
+      dataStatus: dataJson.status,
+      imageStatus: imageJson.status,
+    };
+  }
+
+  return {
+    status: "OK",
+    dataStatus: dataJson.status,
+    imageStatus: imageJson.status,
+  };
 }
 
 function ImageLoader(props) {
   return (
     <Div alignItems="center">
       {props.image ? (
-        <Image h={200} w={200} m={10} source={{ uri: props.image! }} />
+        <Image h={200} w={200} m={10} source={{ uri: props.image.uri! }} />
       ) : null}
 
       <LargeButton
@@ -32,7 +88,8 @@ function ImageLoader(props) {
           });
 
           if (!result.cancelled) {
-            props.setImage(result.uri);
+            props.setImage(result);
+            console.log(result);
           }
         }}
       >
@@ -49,7 +106,19 @@ function OfferForm() {
     <Formik
       initialValues={{ name: "", description: "", price: "", age: "" }}
       validate={(values) => console.log("Validation function")}
-      onSubmit={(values, { setSubmitting }) => console.log(values)}
+      onSubmit={async (values, { setSubmitting }) => {
+        const status = await submitForm(values, image);
+        if (status.status !== "OK") {
+          Alert.alert(
+            "Nie można dodać oferty",
+            `Wystąpił błąd podczas próby dodania oferty, odpowiedź serwera: ${status.status}, ${status.dataStatus}, ${status.imageStatus}`,
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            { cancelable: true }
+          );
+        } else {
+          console.log("TODO: Redirect after adding offer");
+        }
+      }}
     >
       {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
         <View>

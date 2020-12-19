@@ -17,7 +17,7 @@ export default function DetailsScreen({ route, navigation }) {
             }}
           />
         </Div>
-        <Div mt={60} flex={1}>
+        <Div mt={60} flex={1} w={300}>
           <Text textAlign="left" fontSize="lg" fontWeight="bold">
             {offer.name}
           </Text>

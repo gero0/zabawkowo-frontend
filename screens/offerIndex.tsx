@@ -9,6 +9,7 @@ export default function HomeScreen({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log(domain + '/api/offer');
     fetch(domain + "/api/offer")
       .then((response) => response.json())
       .then((json) => setData(json))

@@ -19,15 +19,15 @@ export function LargeButton(props) {
   return (
     <Button
       mt="lg"
-      ml="md"
       px="xl"
       py="lg"
       bg="blue500"
-      w={props.width ? props.width : 300}
+      w={props.w ? props.w : 300}
       rounded="circle"
       color="white"
       shadow={2}
       onPress={props.onPress}
+      ml={props.ml ? props.ml : "md"}
     >
       {props.children}
     </Button>
