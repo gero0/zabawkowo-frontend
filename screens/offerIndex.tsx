@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator, ScrollView } from "react-native";
 import { domain } from "../constants/network";
+import { categoryRequest } from "../helpers/categoryHelpers";
+import { CategorySelectOverlay } from "../components/categorySelectOverlay";
 import OfferSmall from "../components/offer_small";
 import {
   Div,
@@ -46,72 +48,6 @@ async function searchRequest(values, selectedCategories) {
     console.log(`offers fetch exception. ERROR: ${e}`);
     return {};
   }
-}
-
-async function categoryRequest() {
-  const url = domain + "/api/offer/categories";
-
-  try {
-    const response = await fetch(url);
-    const json = await response.json();
-    return json;
-  } catch (e) {
-    console.log(`categories fetch exception. ERROR: ${e}`);
-    return {};
-  }
-}
-
-const handleCategoryChange = (categories, category) => {
-  let newArray = [...categories];
-
-  if (newArray.includes(category)) {
-    newArray.splice(newArray.indexOf(category), 1);
-  } else {
-    newArray.push(category);
-  }
-
-  return newArray;
-};
-
-function CategorySelectOverlay(props) {
-  const checkBoxes = props.categories.map((category) => {
-    return (
-      <Checkbox
-        key={category.id}
-        checked={props.selectedCategories.includes(category)}
-        prefix={
-          <Text ml={20} flex={1}>
-            {category.name}
-          </Text>
-        }
-        onChange={() => {
-          const selected = handleCategoryChange(
-            props.selectedCategories,
-            category
-          );
-
-          props.setSelectedCategories(selected);
-        }}
-      />
-    );
-  });
-
-  return (
-    <Overlay visible={props.overlayVisible} p="xl">
-      <Text fontSize="lg" mt="md">
-        Kategorie
-      </Text>
-      <Div mt={20}>{checkBoxes}</Div>
-      <Button
-        mt={20}
-        onPress={() => {
-          props.setOverlayVisible(false);
-        }}
-      >
-        OK
-      </Button>
-    </Overlay>
-  );
 }
 
 export default function HomeScreen({ navigation }) {

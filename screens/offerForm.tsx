@@ -1,18 +1,23 @@
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
-import { Div, Text, Image } from "react-native-magnus";
+import { Div, Text, Image, Button } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
+import { categoryRequest } from "../helpers/categoryHelpers";
 import * as ImagePicker from "expo-image-picker";
 import * as SecureStore from "expo-secure-store";
 import { domain } from "../constants/network";
-import mime from "mime";
+import { CategorySelectOverlay } from "../components/categorySelectOverlay";
 
-async function submitForm(data, image) {
+async function submitForm(data, image, selectedCategories) {
   const token = await SecureStore.getItemAsync("token");
   if (!token) {
     return { status: "ERR_TOKEN_LOCAL" };
   }
+
+  const categoryIds = selectedCategories.map((category) => category.id);
+  const offer = {...data, categories: categoryIds};
+
   //TODO: add try catch for network error
   const dataResponse = await fetch(domain + "/api/offer/create", {
     method: "POST",
@@ -20,7 +25,7 @@ async function submitForm(data, image) {
       "Content-Type": "application/json",
       authorization: token,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(offer),
   });
 
   const dataJson = await dataResponse.json();
@@ -101,41 +106,72 @@ function ImageLoader(props) {
 
 function OfferForm() {
   const [image, setImage] = useState(null);
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    categoryRequest()
+      .then((json) => setCategories(json))
+      .catch((error) => console.error(error));
+  }, []);
+
+  const selectedCategoriesText = (
+    <Text w={300}>
+      {selectedCategories.map((category) => {
+        return category.name + ", ";
+      })}
+    </Text>
+  );
 
   return (
-    <Formik
-      initialValues={{ name: "", description: "", price: "", age: "" }}
-      validate={(values) => console.log("Validation function")}
-      onSubmit={async (values, { setSubmitting }) => {
-        const status = await submitForm(values, image);
-        if (status.status !== "OK") {
-          Alert.alert(
-            "Nie można dodać oferty",
-            `Wystąpił błąd podczas próby dodania oferty, odpowiedź serwera: ${status.status}, ${status.dataStatus}, ${status.imageStatus}`,
-            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-            { cancelable: true }
-          );
-        } else {
-          console.log("TODO: Redirect after adding offer");
-        }
-      }}
-    >
-      {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
-        <View>
-          <ImageLoader image={image} setImage={setImage} />
-          <Div>
-            <InputField name="name" handler={handleChange("name")} />
-            <InputField
-              name="description"
-              handler={handleChange("description")}
-            />
-            <InputField name="Price" handler={handleChange("price")} />
-            <InputField name="Age" handler={handleChange("age")} />
-            <LargeButton onPress={handleSubmit}>Utwórz ofertę...</LargeButton>
-          </Div>
-        </View>
-      )}
-    </Formik>
+    <ScrollView style={{ flex: 1 }}>
+      <CategorySelectOverlay
+        overlayVisible={overlayVisible}
+        setOverlayVisible={setOverlayVisible}
+        categories={categories}
+        selectedCategories={selectedCategories}
+        setSelectedCategories={setSelectedCategories}
+      />
+      <Formik
+        initialValues={{ name: "", description: "", price: "", age: "" }}
+        validate={(values) => console.log("Validation function")}
+        onSubmit={async (values, { setSubmitting }) => {
+          const status = await submitForm(values, image, selectedCategories);
+          if (status.status !== "OK") {
+            Alert.alert(
+              "Nie można dodać oferty",
+              `Wystąpił błąd podczas próby dodania oferty, odpowiedź serwera: ${status.status}, ${status.dataStatus}, ${status.imageStatus}`,
+              [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+              { cancelable: true }
+            );
+          } else {
+            console.log("TODO: Redirect after adding offer");
+          }
+        }}
+      >
+        {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
+          <View>
+            <ImageLoader image={image} setImage={setImage} />
+            <Div>
+              <InputField name="name" handler={handleChange("name")} />
+              <InputField
+                name="description"
+                handler={handleChange("description")}
+              />
+              <InputField name="Price" handler={handleChange("price")} />
+              <InputField name="Age" handler={handleChange("age")} />
+              <Text>Wybrane kategorie:</Text>
+              {selectedCategoriesText}
+              <LargeButton onPress={() => setOverlayVisible(true)}>
+                Wybierz kategorie...
+              </LargeButton>
+              <LargeButton onPress={handleSubmit}>Utwórz ofertę...</LargeButton>
+            </Div>
+          </View>
+        )}
+      </Formik>
+    </ScrollView>
   );
 }
 
@@ -147,9 +183,7 @@ export default class OfferFormView extends React.Component {
           <Text mt={10} fontSize="lg" fontWeight="bold">
             Utwórz ofertę...
           </Text>
-          <ScrollView style={{ flex: 1 }}>
-            <OfferForm />
-          </ScrollView>
+          <OfferForm />
         </Div>
       </View>
     );
