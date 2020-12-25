@@ -5,9 +5,12 @@ import { View } from "react-native";
 import { Div, Text } from "react-native-magnus";
 import { ScrollView } from "react-native-gesture-handler";
 import { LargeButton } from "../components/formComponents";
+import OfferSmall from "../components/offer_small";
 
 function UserSection(props) {
   const user = props.user;
+  const offers = props.offers;
+
   return (
     <ScrollView>
       <Div w={320} mb={30} alignItems="center">
@@ -54,7 +57,21 @@ function UserSection(props) {
           );
         })}
 
-        <LargeButton ml={40} w={240}>Dodaj adres...</LargeButton>
+        <LargeButton ml={40} w={240}>
+          Dodaj adres...
+        </LargeButton>
+
+        <Text fontSize="lg" mt={10}>
+          Oferty:
+        </Text>
+
+        {offers.map((offer) => {
+          return (
+            <View key={offer.id}>
+              <OfferSmall offer={offer} navigation={null} />
+            </View>
+          );
+        })}
       </Div>
     </ScrollView>
   );
@@ -62,9 +79,10 @@ function UserSection(props) {
 
 export default function UserPage() {
   const [user, setUser] = useState(null);
+  const [offers, setOffers] = useState([]);
 
   useEffect(() => {
-    async function fetchUser() {
+    async function fetchUserandOffers() {
       const token = await SecureStore.getItemAsync("token");
 
       if (!token) {
@@ -85,14 +103,32 @@ export default function UserPage() {
       const json = await response.json();
 
       setUser(json);
+
+      const offerResponse = await fetch(domain + "/api/offer/myoffers", {
+        method: "GET",
+        headers: {
+          authorization: token,
+        },
+      });
+
+      if (!offerResponse) {
+        return;
+      }
+
+      const offersJson = await offerResponse.json();
+      setOffers(offersJson);
     }
 
-    fetchUser();
+    fetchUserandOffers();
   }, []);
 
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
-      {user ? <UserSection user={user} /> : <Text>Loading...</Text>}
+      {user ? (
+        <UserSection user={user} offers={offers} />
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </View>
   );
 }

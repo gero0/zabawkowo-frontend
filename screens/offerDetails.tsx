@@ -1,24 +1,63 @@
+import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Div, Text, Image } from "react-native-magnus";
 import { LargeButton } from "../components/formComponents";
 import { domain } from "../constants/network";
 
+async function removeOffer(offer_id) {
+  const token = await SecureStore.getItemAsync("token");
+  if (!token) {
+    return;
+  }
+
+  const response = await fetch(domain + `/api/offer/${offer_id}/delete`, {
+    method: "POST",
+    headers: { authorization: token },
+  });
+
+  const json = await response.json();
+
+  return json.status;
+}
+
 export default function DetailsScreen({ route, navigation }) {
   const { offer: offerParam } = route.params;
 
   const [offer, setOffer] = useState({ user_id: {}, types: [] });
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     const loadOffer = async () => {
       const response = await fetch(domain + `/api/offer/${offerParam.id}`);
       const json = await response.json();
       setOffer(json);
+
+      const username = await SecureStore.getItemAsync("my_username");
+      if (username) {
+        setUser(username);
+      }
     };
     loadOffer();
   }, []);
 
   const categoriesNames = offer.types.map((category) => category.name + ", ");
+
+  const conditionalButton =
+    user && offer.user_id.username === user ? (
+      <LargeButton
+        onPress={async () => {
+          const status = await removeOffer(offer.id);
+          console.log(status);
+        }}
+      >
+        Usuń ofertę...
+      </LargeButton>
+    ) : (
+      <LargeButton onPress={() => console.log("chat")}>
+        Wyślij wiadomość...
+      </LargeButton>
+    );
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -37,7 +76,9 @@ export default function DetailsScreen({ route, navigation }) {
             {offer.name}
           </Text>
           <Text>{offer.description}</Text>
-          <Text mt={20} fontSize="lg">Kategorie: {categoriesNames}</Text>
+          <Text mt={20} fontSize="lg">
+            Kategorie: {categoriesNames}
+          </Text>
         </Div>
         <Div flex={1} mt={40}>
           <Text fontSize="lg" textAlign="right" fontWeight="bold">
@@ -54,9 +95,7 @@ export default function DetailsScreen({ route, navigation }) {
               : ""}
           </Text>
         </Div>
-        <LargeButton onPress={console.log("chat")}>
-          Wyślij wiadomość...
-        </LargeButton>
+        {conditionalButton}
       </Div>
     </View>
   );

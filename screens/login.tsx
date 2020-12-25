@@ -26,6 +26,15 @@ async function submitForm(data) {
 
   await SecureStore.setItemAsync("token", json.token);
 
+  const userResponse = await fetch(domain + "/api/user/me", {
+    method: "GET",
+    headers: { authorization: json.token },
+  });
+
+  const user = await userResponse.json();
+
+  await SecureStore.setItemAsync("my_username", user.username);
+
   return json.status;
 }
 
