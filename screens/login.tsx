@@ -5,6 +5,7 @@ import { Div, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
 import { domain } from "../constants/network";
 import * as SecureStore from "expo-secure-store";
+import ErrorMap from '../constants/errors';
 
 async function submitForm(data) {
   data.email = data.email.trim();
@@ -46,9 +47,10 @@ function LoginForm() {
       onSubmit={async (values, { setSubmitting }) => {
         const status = await submitForm(values);
         if (status !== "OK") {
+          const statusMessage = ErrorMap[status];
           Alert.alert(
             "Nie można zalogować",
-            `Wystąpił błąd podczas próby logowania, odpowiedź serwera: ${status}`,
+            `${statusMessage}`,
             [{ text: "OK", onPress: () => console.log("OK Pressed") }],
             { cancelable: true }
           );

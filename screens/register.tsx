@@ -5,13 +5,14 @@ import React from "react";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Div, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
+import ErrorMap from '../constants/errors';
 
 async function submitForm(data) {
-  data.username = data.username.trim();
-  data.email = data.email.trim();
-  data.first_name = data.first_name.trim();
-  data.last_name = data.last_name.trim();
-  data.phone_number = data.phone_number.trim();
+  if(data.username) data.username = data.username.trim();
+  if(data.email) data.email = data.email.trim();
+  if(data.first_name) data.first_name = data.first_name.trim();
+  if(data.last_name) data.last_name = data.last_name.trim();
+  if(data.phone_number) data.phone_number = data.phone_number.trim();
 
   const response = await fetch(domain + "/api/user/register", {
     method: "POST",
@@ -57,9 +58,10 @@ function RegisterForm() {
       onSubmit={async (values, { setSubmitting }) => {
         const status = await submitForm(values);
         if (status !== "OK") {
+          const statusMessage = ErrorMap[status];
           Alert.alert(
             "Nie można zarejestrować",
-            `Wystąpił błąd podczas próby rejestracji, odpowiedź serwera: ${status}`,
+            `${statusMessage}`,
             [{ text: "OK", onPress: () => console.log("OK Pressed") }],
             { cancelable: true }
           );

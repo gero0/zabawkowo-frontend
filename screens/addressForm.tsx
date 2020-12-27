@@ -5,11 +5,12 @@ import { Div, Input, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
 import { domain } from "../constants/network";
 import * as SecureStore from "expo-secure-store";
+import ErrorMap from '../constants/errors';
 
 async function submitForm(data) {
-  data.city = data.city.trim();
-  data.postal_code = data.postal_code.trim();
-  data.street_address = data.street_address.trim();
+  if(data.city) data.city = data.city.trim();
+  if(data.postal_code) data.postal_code = data.postal_code.trim();
+  if(data.street_address) data.street_address = data.street_address.trim();
 
   const token = await SecureStore.getItemAsync("token");
 
@@ -44,9 +45,10 @@ function AddressForm() {
       onSubmit={async (values, { setSubmitting }) => {
         const status = await submitForm(values);
         if (status !== "OK") {
+          const statusMessage = ErrorMap[status];
           Alert.alert(
             "Nie można dodać adresu",
-            `Wystąpił błąd podczas próby dodania adresu, odpowiedź serwera: ${status}`,
+            ` ${statusMessage}`,
             [{ text: "OK", onPress: () => console.log("OK Pressed") }],
             { cancelable: true }
           );

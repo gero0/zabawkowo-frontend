@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as SecureStore from "expo-secure-store";
 import { domain } from "../constants/network";
 import { CategorySelectOverlay } from "../components/categorySelectOverlay";
+import ErrorMap from '../constants/errors';
 
 async function submitForm(data, image, selectedCategories) {
   const token = await SecureStore.getItemAsync("token");
@@ -139,9 +140,16 @@ function OfferForm() {
         onSubmit={async (values, { setSubmitting }) => {
           const status = await submitForm(values, image, selectedCategories);
           if (status.status !== "OK") {
+            const dataStatus = ErrorMap[status.dataStatus];
+            let imageStatus = ErrorMap[status.imageStatus];
+
+            if(imageStatus == undefined){
+              imageStatus= "";
+            }
+
             Alert.alert(
               "Nie można dodać oferty",
-              `Wystąpił błąd podczas próby dodania oferty, odpowiedź serwera: ${status.status}, ${status.dataStatus}, ${status.imageStatus}`,
+              `Wystąpił błąd podczas próby dodania oferty: ${dataStatus}, ${imageStatus}`,
               [{ text: "OK", onPress: () => console.log("OK Pressed") }],
               { cancelable: true }
             );
