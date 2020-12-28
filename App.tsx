@@ -8,6 +8,7 @@ import LoginScreen from "./screens/login";
 import OfferForm from "./screens/offerForm";
 import AddressForm from "./screens/addressForm";
 import UserPage from "./screens/userPage";
+import ForgotPassword from "./screens/forgotPassword";
 import { ThemeProvider } from "react-native-magnus";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
@@ -23,6 +24,7 @@ function Home() {
       <Stack.Screen name="Zarejestruj..." component={RegisterScreen} />
       <Stack.Screen name="Profil..." component={UserPage} />
       <Stack.Screen name="Dodaj adres..." component={AddressForm} />
+      <Stack.Screen name="Zapomniałem hasła..." component={ForgotPassword} />
     </Drawer.Navigator>
   );
 }
