@@ -48,7 +48,7 @@ export default function DetailsScreen({ route, navigation }) {
       <LargeButton
         onPress={async () => {
           const status = await removeOffer(offer.id);
-          console.log(status);
+          navigation.navigate("OfferIndex");
         }}
       >
         Usuń ofertę...

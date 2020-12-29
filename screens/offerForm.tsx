@@ -105,7 +105,7 @@ function ImageLoader(props) {
   );
 }
 
-function OfferForm() {
+function OfferForm(props) {
   const [image, setImage] = useState(null);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -154,7 +154,9 @@ function OfferForm() {
               { cancelable: true }
             );
           } else {
-            console.log("TODO: Redirect after adding offer");
+            props.navigation.popToTop()
+            //TODO: fetch created offer and go to its details
+            //props.navigation.navigate("Details", {offer});
           }
         }}
       >
@@ -191,7 +193,7 @@ export default class OfferFormView extends React.Component {
           <Text mt={10} fontSize="lg" fontWeight="bold">
             Utwórz ofertę...
           </Text>
-          <OfferForm />
+          <OfferForm navigation={this.props.navigation}/>
         </Div>
       </View>
     );

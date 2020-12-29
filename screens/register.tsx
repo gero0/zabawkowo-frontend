@@ -5,14 +5,15 @@ import React from "react";
 import { Alert, ScrollView, View } from "react-native";
 import { Button, Div, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
-import ErrorMap from '../constants/errors';
+import ErrorMap from "../constants/errors";
+import AuthContext from "../constants/AuthContext"
 
 async function submitForm(data) {
-  if(data.username) data.username = data.username.trim();
-  if(data.email) data.email = data.email.trim();
-  if(data.first_name) data.first_name = data.first_name.trim();
-  if(data.last_name) data.last_name = data.last_name.trim();
-  if(data.phone_number) data.phone_number = data.phone_number.trim();
+  if (data.username) data.username = data.username.trim();
+  if (data.email) data.email = data.email.trim();
+  if (data.first_name) data.first_name = data.first_name.trim();
+  if (data.last_name) data.last_name = data.last_name.trim();
+  if (data.phone_number) data.phone_number = data.phone_number.trim();
 
   const response = await fetch(domain + "/api/user/register", {
     method: "POST",
@@ -43,7 +44,10 @@ async function submitForm(data) {
   return json.status;
 }
 
-function RegisterForm() {
+function RegisterForm(props) {
+
+  const { signUp } = React.useContext(AuthContext);
+
   return (
     <Formik
       initialValues={{
@@ -65,8 +69,8 @@ function RegisterForm() {
             [{ text: "OK", onPress: () => console.log("OK Pressed") }],
             { cancelable: true }
           );
-        }else{
-          console.log("TODO: redirect after successfull register");
+        } else {
+          signUp();
         }
       }}
     >
@@ -93,13 +97,15 @@ function RegisterForm() {
 }
 export default class RegisterScreen extends React.Component {
   render() {
+    const { navigation } = this.props;
+
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <Text mt={10} fontSize="lg" fontWeight="bold">
           Zarejestruj
         </Text>
         <ScrollView style={{ flex: 1 }}>
-          <RegisterForm />
+          <RegisterForm navigation={navigation} />
         </ScrollView>
       </View>
     );

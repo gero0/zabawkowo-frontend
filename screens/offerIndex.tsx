@@ -11,6 +11,7 @@ import {
   Text,
   Overlay,
   Checkbox,
+  Fab,
 } from "react-native-magnus";
 import { Formik } from "formik";
 
@@ -50,6 +51,20 @@ async function searchRequest(values, selectedCategories) {
   }
 }
 
+//TODO: refresh on focus
+
+function fetchDataAndCategories(setData, setCategories, setLoading) {
+  searchRequest({})
+    .then((json) => setData(json))
+    .catch((error) => console.error(error))
+    .finally(() => setLoading(false));
+
+  categoryRequest()
+    .then((json) => setCategories(json))
+    .catch((error) => console.error(error))
+    .finally(() => setLoading(false));
+}
+
 export default function HomeScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -58,15 +73,7 @@ export default function HomeScreen({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    searchRequest({})
-      .then((json) => setData(json))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
-
-    categoryRequest()
-      .then((json) => setCategories(json))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
+    fetchDataAndCategories(setData, setCategories, setLoading);
   }, []);
 
   const selectedCategoriesText = (
@@ -170,6 +177,7 @@ export default function HomeScreen({ navigation }) {
           )}
         </Div>
       </ScrollView>
+      <Fab bg="blue600" h={50} w={50} onPress={() => navigation.navigate("OfferForm")}></Fab>
     </View>
   );
 }

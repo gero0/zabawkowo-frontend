@@ -5,7 +5,8 @@ import { Div, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
 import { domain } from "../constants/network";
 import * as SecureStore from "expo-secure-store";
-import ErrorMap from '../constants/errors';
+import ErrorMap from "../constants/errors";
+import AuthContext from "../constants/AuthContext"
 
 async function submitForm(data) {
   data.email = data.email.trim();
@@ -39,7 +40,10 @@ async function submitForm(data) {
   return json.status;
 }
 
-function LoginForm() {
+function LoginForm(props) {
+
+  const { signIn } = React.useContext(AuthContext);
+
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
@@ -55,7 +59,7 @@ function LoginForm() {
             { cancelable: true }
           );
         } else {
-          console.log("TODO: Redirect to main page");
+          signIn();
         }
       }}
     >
@@ -75,12 +79,14 @@ function LoginForm() {
 }
 export default class LoginScreen extends React.Component {
   render() {
+    const { navigation } = this.props;
+
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <Text mt={10} fontSize="lg" fontWeight="bold">
           Zaloguj
         </Text>
-        <LoginForm />
+        <LoginForm navigation={navigation} />
       </View>
     );
   }

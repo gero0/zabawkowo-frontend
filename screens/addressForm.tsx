@@ -37,7 +37,7 @@ async function submitForm(data) {
   return json.status;
 }
 
-function AddressForm() {
+function AddressForm(props) {
   return (
     <Formik
       initialValues={{ city: "", postal_code: "", street_address: "" }}
@@ -53,7 +53,7 @@ function AddressForm() {
             { cancelable: true }
           );
         } else {
-          console.log("TODO: Redirect to user page");
+          props.navigation.goBack();
         }
       }}
     >
@@ -78,7 +78,7 @@ export default class AddressScreen extends React.Component {
         <Text mt={10} fontSize="lg" fontWeight="bold">
           Dodaj adres
         </Text>
-        <AddressForm />
+        <AddressForm navigation={this.props.navigation}/>
       </View>
     );
   }
