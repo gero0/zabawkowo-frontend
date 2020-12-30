@@ -65,7 +65,11 @@ function UserSection(props) {
           </Text>
         )}
 
-        <LargeButton ml={40} w={240} onPress={() => props.navigation.navigate("AddressForm")}>
+        <LargeButton
+          ml={40}
+          w={240}
+          onPress={() => props.navigation.navigate("AddressForm")}
+        >
           Dodaj adres...
         </LargeButton>
 
@@ -86,7 +90,6 @@ function UserSection(props) {
             Brak ofert
           </Text>
         )}
-
       </Div>
     </ScrollView>
   );

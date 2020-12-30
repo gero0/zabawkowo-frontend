@@ -9,8 +9,6 @@ import {
   Input,
   Button,
   Text,
-  Overlay,
-  Checkbox,
   Fab,
 } from "react-native-magnus";
 import { Formik } from "formik";
@@ -177,7 +175,12 @@ export default function HomeScreen({ navigation }) {
           )}
         </Div>
       </ScrollView>
-      <Fab bg="blue600" h={50} w={50} onPress={() => navigation.navigate("OfferForm")}></Fab>
+      <Fab
+        bg="blue600"
+        h={50}
+        w={50}
+        onPress={() => navigation.navigate("OfferForm")}
+      ></Fab>
     </View>
   );
 }

@@ -13,7 +13,16 @@ export default class OfferSmall extends React.PureComponent {
     const nav = this.props.navigation;
     return (
       <TouchableOpacity onPress={this.goToDetails.bind(this, offer, nav)}>
-        <Div row w={300} h={100} mb={10} mt={10} p="xl" shadow="sm" rounded="md">
+        <Div
+          row
+          w={300}
+          h={100}
+          mb={10}
+          mt={10}
+          p="xl"
+          shadow="sm"
+          rounded="md"
+        >
           <Div flex={1}>
             <Image
               w={60}

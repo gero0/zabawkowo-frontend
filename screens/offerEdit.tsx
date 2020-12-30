@@ -10,7 +10,7 @@ import { domain } from "../constants/network";
 import { CategorySelectOverlay } from "../components/categorySelectOverlay";
 import ErrorMap from "../constants/errors";
 
-async function submitForm(data, image, selectedCategories) {
+async function submitForm(data, image, selectedCategories, offerId) {
   const token = await SecureStore.getItemAsync("token");
   if (!token) {
     return { status: "ERR_TOKEN_LOCAL" };
@@ -20,7 +20,7 @@ async function submitForm(data, image, selectedCategories) {
   const offer = { ...data, categories: categoryIds };
 
   //TODO: add try catch for network error
-  const dataResponse = await fetch(domain + "/api/offer/create", {
+  const dataResponse = await fetch(domain + `/api/offer/${offerId}/edit`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -40,7 +40,6 @@ async function submitForm(data, image, selectedCategories) {
     return { status: "OK", dataStatus: dataJson.status };
   }
 
-  const offerId = dataJson.offer_id;
   let formData = new FormData();
 
   formData.append("file", {
@@ -84,7 +83,14 @@ function ImageLoader(props) {
     <Div alignItems="center">
       {props.image ? (
         <Image h={200} w={200} m={10} source={{ uri: props.image.uri! }} />
-      ) : null}
+      ) : (
+        <Image
+          h={200}
+          w={200}
+          m={10}
+          source={{ uri: domain + props.offer.photo }}
+        />
+      )}
 
       <LargeButton
         onPress={async () => {
@@ -112,9 +118,24 @@ function OfferForm(props) {
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
-    categoryRequest()
-      .then((json) => setCategories(json))
-      .catch((error) => console.error(error));
+    const fetchAndSetCategories = async () => {
+      const json = await categoryRequest();
+      setCategories(json);
+
+      let selected = [];
+
+      json.forEach((category) => {
+        for (const offerCat of props.offer.types) {
+          if (category.id == offerCat.id) {
+            selected.push(category);
+          }
+        }
+      });
+
+      setSelectedCategories(selected);
+    };
+
+    fetchAndSetCategories();
   }, []);
 
   const selectedCategoriesText = (
@@ -135,10 +156,20 @@ function OfferForm(props) {
         setSelectedCategories={setSelectedCategories}
       />
       <Formik
-        initialValues={{ name: "", description: "", price: "", age: "" }}
+        initialValues={{
+          name: props.offer.name,
+          description: props.offer.description,
+          price: props.offer.price,
+          age: props.offer.age,
+        }}
         validate={(values) => console.log("Validation function")}
         onSubmit={async (values, { setSubmitting }) => {
-          const status = await submitForm(values, image, selectedCategories);
+          const status = await submitForm(
+            values,
+            image,
+            selectedCategories,
+            props.offer.id
+          );
           if (status.status !== "OK") {
             const dataStatus = ErrorMap[status.dataStatus];
             let imageStatus = ErrorMap[status.imageStatus];
@@ -149,7 +180,7 @@ function OfferForm(props) {
 
             Alert.alert(
               "Nie można dodać oferty",
-              `Wystąpił błąd podczas próby dodania oferty: ${dataStatus}, ${imageStatus}`,
+              `Wystąpił błąd podczas próby edycji oferty: ${dataStatus}, ${imageStatus}`,
               [{ text: "OK", onPress: () => console.log("OK Pressed") }],
               { cancelable: true }
             );
@@ -162,15 +193,32 @@ function OfferForm(props) {
       >
         {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
           <View>
-            <ImageLoader image={image} setImage={setImage} />
+            <ImageLoader
+              image={image}
+              setImage={setImage}
+              offer={props.offer}
+            />
             <Div>
-              <InputField name="name" handler={handleChange("name")} />
+              <InputField
+                name="name"
+                handler={handleChange("name")}
+                value={props.offer.name}
+              />
               <InputField
                 name="description"
                 handler={handleChange("description")}
+                value={props.offer.description}
               />
-              <InputField name="Price" handler={handleChange("price")} />
-              <InputField name="Age" handler={handleChange("age")} />
+              <InputField
+                name="Price"
+                handler={handleChange("price")}
+                value={props.offer.price}
+              />
+              <InputField
+                name="Age"
+                handler={handleChange("age")}
+                value={props.offer.age}
+              />
               <Text>Wybrane kategorie:</Text>
               {selectedCategoriesText}
               <LargeButton onPress={() => setOverlayVisible(true)}>
@@ -187,13 +235,14 @@ function OfferForm(props) {
 
 export default class OfferFormView extends React.Component {
   render() {
+    const { offer } = this.props.route.params;
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <Div p={20}>
           <Text mt={10} fontSize="lg" fontWeight="bold">
-            Utwórz ofertę...
+            Edytuj ofertę...
           </Text>
-          <OfferForm navigation={this.props.navigation} />
+          <OfferForm navigation={this.props.navigation} offer={offer} />
         </Div>
       </View>
     );

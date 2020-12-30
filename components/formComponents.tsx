@@ -11,6 +11,7 @@ export function InputField(props) {
       focusBorderColor="blue700"
       borderColor="black"
       onChangeText={props.handler}
+      defaultValue={props.value ? props.value : undefined}
     />
   );
 }

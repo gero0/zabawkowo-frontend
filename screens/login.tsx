@@ -6,7 +6,7 @@ import { InputField, LargeButton } from "../components/formComponents";
 import { domain } from "../constants/network";
 import * as SecureStore from "expo-secure-store";
 import ErrorMap from "../constants/errors";
-import AuthContext from "../constants/AuthContext"
+import AuthContext from "../constants/AuthContext";
 
 async function submitForm(data) {
   data.email = data.email.trim();
@@ -41,7 +41,6 @@ async function submitForm(data) {
 }
 
 function LoginForm(props) {
-
   const { signIn } = React.useContext(AuthContext);
 
   return (

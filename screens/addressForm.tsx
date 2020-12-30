@@ -5,12 +5,12 @@ import { Div, Input, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
 import { domain } from "../constants/network";
 import * as SecureStore from "expo-secure-store";
-import ErrorMap from '../constants/errors';
+import ErrorMap from "../constants/errors";
 
 async function submitForm(data) {
-  if(data.city) data.city = data.city.trim();
-  if(data.postal_code) data.postal_code = data.postal_code.trim();
-  if(data.street_address) data.street_address = data.street_address.trim();
+  if (data.city) data.city = data.city.trim();
+  if (data.postal_code) data.postal_code = data.postal_code.trim();
+  if (data.street_address) data.street_address = data.street_address.trim();
 
   const token = await SecureStore.getItemAsync("token");
 
@@ -78,7 +78,7 @@ export default class AddressScreen extends React.Component {
         <Text mt={10} fontSize="lg" fontWeight="bold">
           Dodaj adres
         </Text>
-        <AddressForm navigation={this.props.navigation}/>
+        <AddressForm navigation={this.props.navigation} />
       </View>
     );
   }

@@ -59,6 +59,19 @@ export default function DetailsScreen({ route, navigation }) {
       </LargeButton>
     );
 
+  const editButton =
+    user && offer.user_id.username === user ? (
+      <LargeButton
+        onPress={async () => {
+          navigation.navigate("OfferEdit", { offer });
+        }}
+      >
+        Edytuj ofertę...
+      </LargeButton>
+    ) : (
+      <Text></Text>
+    );
+
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Div p="xl" shadow="sm" rounded="md">
@@ -95,6 +108,7 @@ export default function DetailsScreen({ route, navigation }) {
               : ""}
           </Text>
         </Div>
+        {editButton}
         {conditionalButton}
       </Div>
     </View>

@@ -3,10 +3,10 @@ import { domain } from "../constants/network";
 import { Formik } from "formik";
 import React from "react";
 import { Alert, ScrollView, View } from "react-native";
-import { Button, Div, Text } from "react-native-magnus";
+import { Div, Text } from "react-native-magnus";
 import { InputField, LargeButton } from "../components/formComponents";
 import ErrorMap from "../constants/errors";
-import AuthContext from "../constants/AuthContext"
+import AuthContext from "../constants/AuthContext";
 
 async function submitForm(data) {
   if (data.username) data.username = data.username.trim();
@@ -45,7 +45,6 @@ async function submitForm(data) {
 }
 
 function RegisterForm(props) {
-
   const { signUp } = React.useContext(AuthContext);
 
   return (

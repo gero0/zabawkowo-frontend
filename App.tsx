@@ -6,6 +6,7 @@ import OfferIndex from "./screens/offerIndex";
 import RegisterScreen from "./screens/register";
 import LoginScreen from "./screens/login";
 import OfferForm from "./screens/offerForm";
+import OfferEdit from "./screens/offerEdit";
 import AddressForm from "./screens/addressForm";
 import UserPage from "./screens/userPage";
 import ForgotPassword from "./screens/forgotPassword";
@@ -133,6 +134,7 @@ export default function App() {
                 />
                 <Stack.Screen name="Details" component={DetailsScreen} />
                 <Stack.Screen name="OfferForm" component={OfferForm} />
+                <Stack.Screen name="OfferEdit" component={OfferEdit} />
                 <Stack.Screen name="UserPage" component={UserPage} options={({navigation}) => ({
                     headerRight: () => (
                       <Button mr={20} onPress={() => authContext.signOut()}>
