@@ -93,7 +93,7 @@ export default function HomeScreen({ navigation }) {
       />
       <ScrollView>
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ search: "", min: "", max: "" }}
           validate={(values) => {}}
           onSubmit={async (values, { setSubmitting }) => {
             const offers = await searchRequest(values, selectedCategories);
