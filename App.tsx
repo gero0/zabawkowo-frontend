@@ -9,6 +9,8 @@ import OfferForm from "./screens/offerForm";
 import OfferEdit from "./screens/offerEdit";
 import AddressForm from "./screens/addressForm";
 import UserPage from "./screens/userPage";
+import ChatScreen from "./screens/chat";
+import ChatIndex from "./screens/chatIndex";
 import ForgotPassword from "./screens/forgotPassword";
 import { Button, ThemeProvider } from "react-native-magnus";
 import { View } from "react-native";
@@ -124,25 +126,39 @@ export default function App() {
                 <Stack.Screen
                   name="OfferIndex"
                   component={OfferIndex}
-                  options={({navigation}) => ({
+                  options={({ navigation }) => ({
                     headerRight: () => (
-                      <Button mr={20} onPress={() => navigation.navigate("UserPage")}>
-                        Mój profil...
-                      </Button>
+                      <Div row>
+                        <Button mr={20} onPress={() => {navigation.navigate("ChatIndex")}}>
+                          Wiadomości
+                        </Button>
+                        <Button
+                          mr={20}
+                          onPress={() => navigation.navigate("UserPage")}
+                        >
+                          Mój profil...
+                        </Button>
+                      </Div>
                     ),
                   })}
                 />
                 <Stack.Screen name="Details" component={DetailsScreen} />
                 <Stack.Screen name="OfferForm" component={OfferForm} />
                 <Stack.Screen name="OfferEdit" component={OfferEdit} />
-                <Stack.Screen name="UserPage" component={UserPage} options={({navigation}) => ({
+                <Stack.Screen
+                  name="UserPage"
+                  component={UserPage}
+                  options={({ navigation }) => ({
                     headerRight: () => (
                       <Button mr={20} onPress={() => authContext.signOut()}>
                         Wyloguj
                       </Button>
                     ),
-                  })}/>
+                  })}
+                />
                 <Stack.Screen name="AddressForm" component={AddressForm} />
+                <Stack.Screen name="ChatIndex" component={ChatIndex} />
+                <Stack.Screen name="Chat" component={ChatScreen} />
               </>
             )}
           </Stack.Navigator>
@@ -151,13 +167,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-
-/*<Drawer.Navigator initialRouteName="Oferty">
-      <Stack.Screen name="Oferty" component={OfferIndex} />
-      <Stack.Screen name="Dodaj ofertę..." component={OfferForm} />
-      <Stack.Screen name="Zaloguj..." component={LoginScreen} />
-      <Stack.Screen name="Zarejestruj..." component={RegisterScreen} />
-      <Stack.Screen name="Profil..." component={UserPage} />
-      <Stack.Screen name="Dodaj adres..." component={AddressForm} />
-      <Stack.Screen name="Zapomniałem hasła..." component={ForgotPassword} />
-    </Drawer.Navigator>*/

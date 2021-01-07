@@ -54,7 +54,11 @@ export default function DetailsScreen({ route, navigation }) {
         Usuń ofertę...
       </LargeButton>
     ) : (
-      <LargeButton onPress={() => console.log("chat")}>
+      <LargeButton
+        onPress={() => {
+          navigation.navigate("Chat", { other_user_id: offer.user_id.id });
+        }}
+      >
         Wyślij wiadomość...
       </LargeButton>
     );
