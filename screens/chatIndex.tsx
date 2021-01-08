@@ -38,15 +38,33 @@ export default function ChatIndex({ route, navigation }) {
             <TouchableOpacity
               key={chat.id}
               onPress={() => {
-                const id = (myId == chat.user_id_1) ? chat.user_id_2 : chat.user_id_1;
+                const id =
+                  myId == chat.user_id_1 ? chat.user_id_2 : chat.user_id_1;
                 navigation.navigate("Chat", { other_user_id: id });
               }}
             >
-              <Div w={200} p={10} mt={5} mb={5} alignSelf="center" shadow="sm" rounded="md">
+              <Div
+                w={200}
+                p={10}
+                mt={5}
+                mb={5}
+                alignSelf="center"
+                shadow="sm"
+                rounded="md"
+              >
                 <Text fontSize="lg" fontWeight="bold">
                   {chat.otherUsername}
                 </Text>
+
                 <Text>{chat.lastMessage.text}</Text>
+
+                {(chat.user_id_1 == myId && chat.user_notification_1) ||
+                (chat.user_id_2 == myId && chat.user_notification_2) ? (
+                  <Div p={5} rounded="md" bg="red500"><Text>Nowe</Text></Div>
+                ) : (
+                  <></>
+                )}
+                
               </Div>
             </TouchableOpacity>
           );

@@ -123,25 +123,7 @@ export default function App() {
               </>
             ) : (
               <>
-                <Stack.Screen
-                  name="OfferIndex"
-                  component={OfferIndex}
-                  options={({ navigation }) => ({
-                    headerRight: () => (
-                      <Div row>
-                        <Button mr={20} onPress={() => {navigation.navigate("ChatIndex")}}>
-                          Wiadomości
-                        </Button>
-                        <Button
-                          mr={20}
-                          onPress={() => navigation.navigate("UserPage")}
-                        >
-                          Mój profil...
-                        </Button>
-                      </Div>
-                    ),
-                  })}
-                />
+                <Stack.Screen name="OfferIndex" component={OfferIndex} />
                 <Stack.Screen name="Details" component={DetailsScreen} />
                 <Stack.Screen name="OfferForm" component={OfferForm} />
                 <Stack.Screen name="OfferEdit" component={OfferEdit} />

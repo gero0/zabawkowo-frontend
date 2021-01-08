@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, ActivityIndicator, ScrollView } from "react-native";
 import { domain } from "../constants/network";
 import { categoryRequest } from "../helpers/categoryHelpers";
 import { CategorySelectOverlay } from "../components/categorySelectOverlay";
 import OfferSmall from "../components/offer_small";
-import {
-  Div,
-  Input,
-  Button,
-  Text,
-  Fab,
-} from "react-native-magnus";
+import { Div, Input, Button, Text, Fab } from "react-native-magnus";
 import { Formik } from "formik";
+import * as SecureStore from "expo-secure-store";
 
 async function searchRequest(values, selectedCategories) {
   let url = domain + "/api/offer?";
@@ -69,10 +64,66 @@ export default function HomeScreen({ navigation }) {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [data, setData] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     fetchDataAndCategories(setData, setCategories, setLoading);
   }, []);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = await SecureStore.getItemAsync("token");
+
+      if (!token) {
+        return;
+      }
+
+      const response = await fetch(domain + `/api/chat/notifications`, {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          authorization: token,
+        },
+      });
+
+      const json = await response.json();
+
+      setNotificationCount(json.count);
+    };
+
+    fetchNotifications();
+  }, [notificationCount]);
+
+  useLayoutEffect(() => {
+    const msgButtonContent =
+      notificationCount > 0 ? (
+        <>
+          <Text color="white">Wiadomości: </Text>
+          <Div bg="red500" rounded="md" minW={20} alignItems="center">
+            <Text color="white">{notificationCount}</Text>
+          </Div>
+        </>
+      ) : (
+        <Text color="white">Wiadomości</Text>
+      );
+    navigation.setOptions({
+      headerRight: () => (
+        <Div row>
+          <Button
+            mr={20}
+            onPress={() => {
+              navigation.navigate("ChatIndex");
+            }}
+          >
+            {msgButtonContent}
+          </Button>
+          <Button mr={20} onPress={() => navigation.navigate("UserPage")}>
+            Mój profil...
+          </Button>
+        </Div>
+      ),
+    });
+  }, [navigation, notificationCount]);
 
   const selectedCategoriesText = (
     <Text w={300}>
