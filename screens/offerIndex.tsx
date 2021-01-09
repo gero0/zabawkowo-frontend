@@ -7,6 +7,7 @@ import OfferSmall from "../components/offer_small";
 import { Div, Input, Button, Text, Fab } from "react-native-magnus";
 import { Formik } from "formik";
 import * as SecureStore from "expo-secure-store";
+import { useIsFocused } from "@react-navigation/native";
 
 async function searchRequest(values, selectedCategories) {
   let url = domain + "/api/offer?";
@@ -66,9 +67,13 @@ export default function HomeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    fetchDataAndCategories(setData, setCategories, setLoading);
-  }, []);
+    if(isFocused){
+      fetchDataAndCategories(setData, setCategories, setLoading);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -91,8 +96,11 @@ export default function HomeScreen({ navigation }) {
       setNotificationCount(json.count);
     };
 
-    fetchNotifications();
-  }, [notificationCount]);
+    if(isFocused){
+      fetchNotifications();
+    }
+
+  }, [notificationCount, isFocused]);
 
   useLayoutEffect(() => {
     const msgButtonContent =
@@ -117,7 +125,7 @@ export default function HomeScreen({ navigation }) {
           >
             {msgButtonContent}
           </Button>
-          <Button mr={20} onPress={() => navigation.navigate("UserPage")}>
+          <Button mr={20} p={10} onPress={() => navigation.navigate("UserPage")}>
             Mój profil...
           </Button>
         </Div>

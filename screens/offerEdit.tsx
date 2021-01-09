@@ -224,7 +224,7 @@ function OfferForm(props) {
               <LargeButton onPress={() => setOverlayVisible(true)}>
                 Wybierz kategorie...
               </LargeButton>
-              <LargeButton onPress={handleSubmit}>Utwórz ofertę...</LargeButton>
+              <LargeButton onPress={handleSubmit}>Potwierdź zmiany</LargeButton>
             </Div>
           </View>
         )}

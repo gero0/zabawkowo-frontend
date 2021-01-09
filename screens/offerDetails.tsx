@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -27,6 +28,8 @@ export default function DetailsScreen({ route, navigation }) {
   const [offer, setOffer] = useState({ user_id: {}, types: [] });
   const [user, setUser] = useState("");
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     const loadOffer = async () => {
       const response = await fetch(domain + `/api/offer/${offerParam.id}`);
@@ -38,8 +41,9 @@ export default function DetailsScreen({ route, navigation }) {
         setUser(username);
       }
     };
-    loadOffer();
-  }, []);
+    
+    if (isFocused) loadOffer();
+  }, [isFocused]);
 
   const categoriesNames = offer.types.map((category) => category.name + ", ");
 

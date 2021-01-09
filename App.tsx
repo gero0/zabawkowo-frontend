@@ -113,20 +113,49 @@ export default function App() {
           <Stack.Navigator>
             {state.userToken == null ? (
               <>
-                <Stack.Screen name="Welcome" component={Welcome} />
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen
+                  name="Welcome"
+                  component={Welcome}
+                  options={{ title: "Ekran powitalny" }}
+                />
+                <Stack.Screen
+                  name="Login"
+                  component={LoginScreen}
+                  options={{ title: "Logowanie" }}
+                />
+                <Stack.Screen
+                  name="Register"
+                  component={RegisterScreen}
+                  options={{ title: "Rejestracja" }}
+                />
                 <Stack.Screen
                   name="ForgotPassword"
                   component={ForgotPassword}
+                  options={{ title: "Zapomniałem hasła..." }}
                 />
               </>
             ) : (
               <>
-                <Stack.Screen name="OfferIndex" component={OfferIndex} />
-                <Stack.Screen name="Details" component={DetailsScreen} />
-                <Stack.Screen name="OfferForm" component={OfferForm} />
-                <Stack.Screen name="OfferEdit" component={OfferEdit} />
+                <Stack.Screen
+                  name="OfferIndex"
+                  component={OfferIndex}
+                  options={{ title: "Oferty" }}
+                />
+                <Stack.Screen
+                  name="Details"
+                  component={DetailsScreen}
+                  options={{ title: "Szczegóły oferty" }}
+                />
+                <Stack.Screen
+                  name="OfferForm"
+                  component={OfferForm}
+                  options={{ title: "Utwórz ofertę" }}
+                />
+                <Stack.Screen
+                  name="OfferEdit"
+                  component={OfferEdit}
+                  options={{ title: "Edycja oferty" }}
+                />
                 <Stack.Screen
                   name="UserPage"
                   component={UserPage}
@@ -136,11 +165,24 @@ export default function App() {
                         Wyloguj
                       </Button>
                     ),
+                    title: "Moje konto",
                   })}
                 />
-                <Stack.Screen name="AddressForm" component={AddressForm} />
-                <Stack.Screen name="ChatIndex" component={ChatIndex} />
-                <Stack.Screen name="Chat" component={ChatScreen} />
+                <Stack.Screen
+                  name="AddressForm"
+                  component={AddressForm}
+                  options={{ title: "Dodaj adres" }}
+                />
+                <Stack.Screen
+                  name="ChatIndex"
+                  component={ChatIndex}
+                  options={{ title: "Wiadomości" }}
+                />
+                <Stack.Screen
+                  name="Chat"
+                  component={ChatScreen}
+                  options={{ title: "Czat" }}
+                />
               </>
             )}
           </Stack.Navigator>

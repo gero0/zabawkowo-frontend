@@ -2,11 +2,33 @@ import React, { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { domain } from "../constants/network";
 import { View } from "react-native";
-import { Div, Text } from "react-native-magnus";
+import { Button, Div, Text } from "react-native-magnus";
 import { ScrollView } from "react-native-gesture-handler";
 import { LargeButton } from "../components/formComponents";
 import OfferSmall from "../components/offer_small";
 import AuthContext from "../constants/AuthContext";
+import { useIsFocused } from "@react-navigation/native";
+
+async function deleteAddress(id: number, addressUpdated, setAddressUpdated) {
+  const token = await SecureStore.getItemAsync("token");
+
+  if (!token) {
+    return;
+  }
+
+  const headers = {
+    "content-type": "application/json",
+    authorization: token,
+  };
+
+  const form_response = await fetch(domain + "/api/user/delete-address", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ id }),
+  });
+
+  setAddressUpdated(!addressUpdated);
+}
 
 function UserSection(props) {
   const user = props.user;
@@ -56,6 +78,17 @@ function UserSection(props) {
                 <Text>Ulica: {address.street_address}</Text>
                 <Text>Miasto: {address.city}</Text>
                 <Text>Kod pocztowy: {address.postal_code}</Text>
+                <Button
+                  onPress={() =>
+                    deleteAddress(
+                      address.id,
+                      props.addressUpdated,
+                      props.setAddressUpdated
+                    )
+                  }
+                >
+                  Usuń
+                </Button>
               </Div>
             );
           })
@@ -98,6 +131,9 @@ function UserSection(props) {
 export default function UserPage({ navigation }) {
   const [user, setUser] = useState(null);
   const [offers, setOffers] = useState([]);
+  const [addressUpdated, setAddressUpdated] = useState(false);
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     async function fetchUserandOffers() {
@@ -137,14 +173,19 @@ export default function UserPage({ navigation }) {
       setOffers(offersJson);
     }
 
-    fetchUserandOffers();
-  }, []);
+    if (isFocused) fetchUserandOffers();
+  }, [isFocused, addressUpdated]);
 
   return (
-    //TODO: refresh on focus
     <View style={{ flex: 1, alignItems: "center" }}>
       {user ? (
-        <UserSection user={user} offers={offers} navigation={navigation} />
+        <UserSection
+          user={user}
+          offers={offers}
+          navigation={navigation}
+          addressUpdated={addressUpdated}
+          setAddressUpdated={setAddressUpdated}
+        />
       ) : (
         <Text>Loading...</Text>
       )}

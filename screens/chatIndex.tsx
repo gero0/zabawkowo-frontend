@@ -3,10 +3,13 @@ import { domain } from "../constants/network";
 import * as SecureStore from "expo-secure-store";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Div, Text } from "react-native-magnus";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ChatIndex({ route, navigation }) {
   const [chats, setChats] = useState([]);
   const [myId, setMyId] = useState(0);
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -27,8 +30,8 @@ export default function ChatIndex({ route, navigation }) {
       setMyId(json.my_id);
     };
 
-    fetchChats();
-  }, []);
+    if (isFocused) fetchChats();
+  }, [isFocused]);
 
   return (
     <ScrollView>
@@ -60,17 +63,20 @@ export default function ChatIndex({ route, navigation }) {
 
                 {(chat.user_id_1 == myId && chat.user_notification_1) ||
                 (chat.user_id_2 == myId && chat.user_notification_2) ? (
-                  <Div p={5} rounded="md" bg="red500"><Text>Nowe</Text></Div>
+                  <Div p={5} rounded="md" bg="red500">
+                    <Text>Nowe</Text>
+                  </Div>
                 ) : (
                   <></>
                 )}
-                
               </Div>
             </TouchableOpacity>
           );
         })
       ) : (
-        <Text>Nie masz żadnych wiadomości</Text>
+        <Div>
+          <Text textAlign="center">Nie masz żadnych wiadomości</Text>
+        </Div>
       )}
     </ScrollView>
   );
