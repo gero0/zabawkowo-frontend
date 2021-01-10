@@ -19,7 +19,6 @@ async function submitForm(data, image, selectedCategories, offerId) {
   const categoryIds = selectedCategories.map((category) => category.id);
   const offer = { ...data, categories: categoryIds };
 
-  //TODO: add try catch for network error
   const dataResponse = await fetch(domain + `/api/offer/${offerId}/edit`, {
     method: "POST",
     headers: {
@@ -186,8 +185,6 @@ function OfferForm(props) {
             );
           } else {
             props.navigation.popToTop();
-            //TODO: fetch created offer and go to its details
-            //props.navigation.navigate("Details", {offer});
           }
         }}
       >

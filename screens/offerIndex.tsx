@@ -45,8 +45,6 @@ async function searchRequest(values, selectedCategories) {
   }
 }
 
-//TODO: refresh on focus
-
 function fetchDataAndCategories(setData, setCategories, setLoading) {
   searchRequest({})
     .then((json) => setData(json))
