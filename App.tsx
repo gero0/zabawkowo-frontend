@@ -14,17 +14,20 @@ import ChatIndex from "./screens/chatIndex";
 import ForgotPassword from "./screens/forgotPassword";
 import { Button, ThemeProvider } from "react-native-magnus";
 import { View } from "react-native";
-import { Div, Text } from "react-native-magnus";
+import { Div, Text, Image } from "react-native-magnus";
 import * as SecureStore from "expo-secure-store";
 import { LargeButton } from "./components/formComponents";
 import AuthContext from "./constants/AuthContext";
+
+const logo = require("./assets/images/zabawkowo_logo.png");
 
 const Stack = createStackNavigator();
 
 function Welcome({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
-      <Div>
+      <Div alignSelf="center">
+        <Image mt={20} w={200} h={200} source={logo} alignSelf="center" resizeMode="stretch"/>
         <Text textAlign="center" mt={10} fontSize="lg" fontWeight="bold">
           Witaj w Zabawkowie!
         </Text>
