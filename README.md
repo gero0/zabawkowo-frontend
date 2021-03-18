@@ -1,2 +1,3 @@
-# zabawkowo-frontend
-Frontend for a mobile app built using React Native
+# zabawkowo
+A mobile app for an online marketplace.
+Built using React Native.
